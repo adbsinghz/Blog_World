@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+{% extends 'blog/base.html' %}
+{% block content %}
+
+        <article class="media content-section">
+            <img class= "rounded-circle article-img" src="{{ object.author.profile.image.url }}"> 
+        <div class="media-body">
+            <div class="article-metadata">
+            <a class="mr-2" href="#">{{ object.author }}</a>
+            <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+            {% if object.author == user %}
+                <div>
+                <a class= "btn btn-secondary btn-sm mt-1 mb-1"href= "{% url 'post-update' object.id %}"> Update </a>
+                <a class= "btn btn-danger btn-sm mt-1 mb-1"href= "{% url 'post-delete' object.id %}"> Delete </a>
+                <div>
+            {% endif %}
+            
+            </div>
+            <h2class="article-title" > {{ object.title }}</h2>
+            <p class="article-content">{{ object.content }}</p>
+            {% if object.author != user %}
+            
+            <form action = "{% url 'post-like' object.id %}" method ="POST">
+                {% csrf_token %}
+                {% if request.user.is_authenticated %}
+                {% if liked %}
+                    <button type="submit", name="postLike_id", value = "{{ object.id }}", class= "btn btn-danger btn-sm"> Unlike </button> {{ total_likes }} - Likes
+                {% else %}
+                    <button type="submit", name="postLike_id", value = "{{ object.id }}", class= "btn btn-primary btn-sm"> Like </button> {{ total_likes }} - Likes
+                {% endif %}
+
+                {% else %}
+                <a class="mr-2" href="{% url 'login' %}"> Login to like the Blog!</a>
+                {% endif %}
+            </form>
+            {% endif %}
+
+            <h2> Comments.. </h2>
+            {% if not post.blog_post_comments.all %}
+                No Comments Yet... <a href ="{% url 'post-comment' object.id %} ">
+                    Add One</a>
+            {% else %}
+            <a href="{% url 'post-comment' object.id %}"> Add Comment</a>
+            <br/>
+
+                {% for comment in post.blog_post_comments.all %}
+                <strong>
+                    
+                    {{comment.name}} -
+                    {{ comment.date_posted }}
+                </strong>
+                <br/>
+                - {{comment.body}}
+                <br/>
+                <!-- <a href="{% url 'post-delete' object.id %}">Delete</a> -->
+                <br/>
+                {% endfor %}
+
+                
+                
+            {% endif %}
+        </div> 
+        </article>
+
+{% endblock content %}
+

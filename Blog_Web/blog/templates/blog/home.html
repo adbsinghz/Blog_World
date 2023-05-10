@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% extends 'blog/base.html' %}
+{% block content %}
+    {% for x in key %}
+        <article class="media content-section">
+            <img class= "rounded-circle article-img" src="{{ x.author.profile.image.url }}"> 
+        <div class="media-body">
+            <div class="article-metadata">
+            <a class="mr-2" href="#">{{ x.author }}</a>
+            <small class="text-muted">{{ x.date_posted|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title" href="{% url 'post-detail' x.id %}">{{ x.title }}</a></h2>
+            <p class="article-content">{{ x.content }}</p>
+        </div>
+        
+        <button><a style= "margin: 0; border: 0; padding: 0; " class="btn btn-light btn-sm" href="{% url 'post-detail' x.id %}">More Details</a></button>
+            
+        </article>
+    {% endfor %}
+{% endblock content %}
+
